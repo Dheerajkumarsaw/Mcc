@@ -1,36 +1,163 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Marketing Command Center
+
+AI-powered marketing campaign generator that turns any product URL into a complete, multi-channel marketing kit in seconds.
+
+Paste a product URL and your affiliate link — get ready-to-publish content for **Email, Twitter, Instagram & Facebook**, each with a marketing slogan and an AI-generated image prompt.
+
+## Features
+
+- **Multi-Channel Content** — Generates email snippets, Twitter posts (x3), Instagram captions, and Facebook posts from a single URL
+- **Affiliate Link Guaranteed** — Every piece of content includes your affiliate link, validated post-generation
+- **Visual Hooks** — Each channel gets a catchy marketing slogan + a detailed text-to-image prompt (for Midjourney, DALL-E, etc.)
+- **Smart Scraping** — Automatically extracts product title and description using Cheerio
+- **One-Click Copy** — Copy any content piece or image prompt to clipboard instantly
+- **Animated UI** — Smooth entrance animations, loading step indicators, and interactive hover effects
+- **Responsive Design** — Fully responsive across desktop, tablet, and mobile
+- **Multi-Page Site** — Home, Services, About, Testimonials, Contact, and Generate pages
+
+## Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| [Next.js 16](https://nextjs.org/) (App Router) | React framework with server-side API routes |
+| [TypeScript](https://www.typescriptlang.org/) | Type-safe codebase |
+| [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first styling |
+| [Cheerio](https://cheerio.js.org/) | Lightweight HTML parsing for URL scraping |
+| [Qwen 3.5 via osmAPI](https://osmapi.com/) | LLM-powered content generation |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/marketing-command-center.git
+cd marketing-command-center
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+```
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+OSM_API_KEY=your_osm_api_key_here
+```
+
+Get your API key from [osmAPI](https://osmapi.com/).
+
+### Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+├── page.tsx                 # Home page — hero, features, how it works
+├── layout.tsx               # Root layout with navbar + footer
+├── globals.css              # Tailwind + custom animations
+├── generate/page.tsx        # Campaign generator tool
+├── services/page.tsx        # Services overview
+├── about/page.tsx           # Company story, values, team
+├── testimonials/page.tsx    # User testimonials
+├── contact/page.tsx         # Contact form + info
+└── api/generate/route.ts    # POST API — scrape + AI generate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+components/
+├── Navbar.tsx               # Sticky nav with mobile menu
+├── Footer.tsx               # Site footer
+├── CampaignForm.tsx         # Form with animated loading steps
+├── HeroSection.tsx          # Reusable hero component
+└── ResultCard.tsx           # Content card with visual banner + copy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+lib/
+├── types.ts                 # Shared TypeScript interfaces
+├── scraper.ts               # Cheerio-based URL metadata extraction
+└── qwen.ts                  # Qwen AI client, prompts, response parsing
+```
+
+## How It Works
+
+1. **Paste a URL** — Enter any product or article page URL
+2. **Add your affiliate link** — Your unique tracking link
+3. **AI generates content** — Qwen 3.5 creates platform-specific marketing copy
+4. **Get your kit** — Email, Twitter, Instagram, Facebook content + slogans + image prompts
+5. **Copy & publish** — One-click copy for each piece
+
+## API Endpoint
+
+```
+POST /api/generate
+Content-Type: application/json
+
+{
+  "productUrl": "https://example.com/product",
+  "affiliateLink": "https://your-affiliate-link.com/ref/123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "email": "Subject: ...\n\nBody...",
+    "twitter": ["Tweet 1...", "Tweet 2...", "Tweet 3..."],
+    "instagram": "Caption with #hashtags...",
+    "facebook": "Engaging post...",
+    "visuals": {
+      "email": { "slogan": "...", "imagePrompt": "..." },
+      "twitter": { "slogan": "...", "imagePrompt": "..." },
+      "instagram": { "slogan": "...", "imagePrompt": "..." },
+      "facebook": { "slogan": "...", "imagePrompt": "..." }
+    }
+  }
+}
+```
+
+## Pages
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page with features, stats, and how-it-works |
+| `/generate` | The campaign generator tool |
+| `/services` | Detailed service descriptions with flow diagram |
+| `/about` | Company story, values, and team |
+| `/testimonials` | User reviews with ratings |
+| `/contact` | Contact form, FAQ, and office info |
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy is with [Vercel](https://vercel.com/new):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push your code to GitHub
+2. Import the repo on Vercel
+3. Add `OSM_API_KEY` to Environment Variables
+4. Deploy
+
+## License
+
+MIT
